@@ -17,11 +17,11 @@ public class PostServiceImpl implements PostService {
   public PostServiceImpl() {
     tempPosts = new ArrayList<>();
     tempPosts.add(
-        new Post(UUID.randomUUID(), "Post 1", "Content 1", "2021-01-01",
+        new Post(UUID.randomUUID(), "Post 1", "Content 1",
             new Category(UUID.randomUUID(), "Category 1")));
-    tempPosts.add(new Post(UUID.randomUUID(), "Post 2", "Content 2", "2021-01-02",
+    tempPosts.add(new Post(UUID.randomUUID(), "Post 2", "Content 2",
         new Category(UUID.randomUUID(), "Category 2")));
-    tempPosts.add(new Post(UUID.randomUUID(), "Post 3", "Content 3", "2021-01-03",
+    tempPosts.add(new Post(UUID.randomUUID(), "Post 3", "Content 3",
         new Category(UUID.randomUUID(), "Category 3")));
   }
 

@@ -1,52 +1,50 @@
 package com.dauphine.blogger.services.impl;
 
 import com.dauphine.blogger.models.Category;
+import com.dauphine.blogger.repositories.CategoryRepository;
 import com.dauphine.blogger.services.CategoryService;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
-  private final List<Category> tempCategories;
+  private final CategoryRepository repository;
 
-  public CategoryServiceImpl() {
-    tempCategories = new ArrayList<>();
-    tempCategories.add(new Category(UUID.randomUUID(), "Category 1"));
-    tempCategories.add(new Category(UUID.randomUUID(), "Category 2"));
-    tempCategories.add(new Category(UUID.randomUUID(), "Category 3"));
+  public CategoryServiceImpl(CategoryRepository repository) {
+    this.repository = repository;
   }
 
   @Override
   public List<Category> getAll() {
-    return tempCategories;
+    return repository.findAll();
   }
 
   @Override
-  public Optional<Category> getById(UUID id) {
-    for (Category category : tempCategories) {
-      if (category.getId() == id) {
-        return Optional.of(category);
-      }
-    }
-    return Optional.empty();
+  public Category getById(UUID id) {
+    return repository.findById(id).orElse(null);
   }
 
   @Override
   public Category create(String name) {
-    return null;
+    Category category = new Category(name);
+    return repository.save(category);
   }
 
   @Override
   public Category updateName(UUID id, String name) {
-    return null;
+    return repository.findById(id)
+        .map(category -> {
+          category.setName(name);
+          return repository.save(category);
+        })
+        .orElse(null);
   }
 
   @Override
   public boolean delete(UUID id) {
-    return false;
+    repository.deleteById(id);
+    return true;
   }
 }
