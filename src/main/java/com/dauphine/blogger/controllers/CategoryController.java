@@ -2,11 +2,12 @@ package com.dauphine.blogger.controllers;
 
 import com.dauphine.blogger.dto.CreationCategoryRequest;
 import com.dauphine.blogger.models.Category;
+import com.dauphine.blogger.services.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -21,20 +22,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v1/categories")
 public class CategoryController {
 
-  private final List<Category> tempCategories;
+  CategoryService categoryService;
 
-  public CategoryController() {
-    tempCategories = new ArrayList<>();
-    tempCategories.add(new Category(1, "Category 1"));
-    tempCategories.add(new Category(2, "Category 2"));
-    tempCategories.add(new Category(3, "Category 3"));
+  public CategoryController(CategoryService categoryService) {
+    this.categoryService = categoryService;
   }
 
   @GetMapping
   @Operation(summary = "Get all categories endpoint", description = "Retrieve all categories")
   public String getAll() {
     StringBuilder result = new StringBuilder("All categories:<br/>");
-    for (Category category : tempCategories) {
+    for (Category category : categoryService.getAll()) {
       result.append(category.toString()).append("<br/>");
     }
     return result.toString();
@@ -42,12 +40,11 @@ public class CategoryController {
 
   @GetMapping("/{id}")
   @Operation(summary = "Get a category by ID endpoint", description = "Retrieve a category by ID")
-  public String getByID(@Parameter(description = "ID Category to get") @PathVariable String id) {
+  public String getByID(@Parameter(description = "ID Category to get") @PathVariable UUID id) {
     String result = "";
-    for (Category category : tempCategories) {
-      if (category.getId() == Integer.parseInt(id)) {
-        return category.toString();
-      }
+    Optional<Category> category = categoryService.getById(id);
+    if (category.isPresent()) {
+      return category.get().toString();
     }
     return "No category found for ID " + id;
   }

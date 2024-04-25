@@ -2,13 +2,13 @@ package com.dauphine.blogger.controllers;
 
 import com.dauphine.blogger.dto.CreationPostRequest;
 import com.dauphine.blogger.dto.UpdatePostRequest;
-import com.dauphine.blogger.models.Category;
 import com.dauphine.blogger.models.Post;
+import com.dauphine.blogger.services.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,20 +23,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v1/posts")
 public class PostController {
 
-  private final List<Post> tempPosts;
+  private final PostService postService;
 
-  public PostController() {
-    tempPosts = new ArrayList<>();
-    tempPosts.add(new Post(1, "Post 1", "Content 1", "2021-01-01", new Category(1, "Category 1")));
-    tempPosts.add(new Post(2, "Post 2", "Content 2", "2021-01-02", new Category(2, "Category 2")));
-    tempPosts.add(new Post(3, "Post 3", "Content 3", "2021-01-03", new Category(3, "Category 3")));
+  public PostController(PostService postService) {
+    this.postService = postService;
   }
 
   @GetMapping
   @Operation(summary = "Get all posts endpoint", description = "Retrieve all posts")
   public String getAll() {
     StringBuilder result = new StringBuilder("All posts:<br/>");
-    for (Post post : tempPosts) {
+    for (Post post : postService.getAll()) {
       result.append(post.toString()).append("<br/>");
     }
     return result.toString();
@@ -46,7 +43,7 @@ public class PostController {
   @Operation(summary = "Get all posts ordered by creation date endpoint", description = "Retrieve all posts ordered by creation date")
   public String getAllOrderedByCreationDate() {
     StringBuilder result = new StringBuilder("All posts ordered by creation date:<br/>");
-    for (Post post : tempPosts) {
+    for (Post post : postService.getAllOrderedByCreationDate()) {
       result.append(post.toString()).append("<br/>");
     }
     return result.toString();
@@ -54,12 +51,10 @@ public class PostController {
 
   @GetMapping("/category/{id}")
   @Operation(summary = "Get all posts by category endpoint", description = "Retrieve all posts by category")
-  public String getAllByCategory(@PathVariable int id) {
+  public String getAllByCategory(@PathVariable UUID id) {
     StringBuilder result = new StringBuilder("All posts by category:<br/>");
-    for (Post post : tempPosts) {
-      if (post.getCategory().getId() == id) {
-        result.append(post.toString()).append("<br/>");
-      }
+    for (Post post : postService.getAllByCategory(id)) {
+      result.append(post.toString()).append("<br/>");
     }
     if (result.toString().equals("All posts by category:<br/>")) {
       return "No posts found for category of ID " + id;
@@ -69,15 +64,14 @@ public class PostController {
 
   @GetMapping("/{id}")
   @Operation(summary = "Get a post by ID endpoint", description = "Retrieve a post by ID")
-  public String getByID(@Parameter(description = "ID Post to get") @PathVariable int id) {
+  public String getByID(@Parameter(description = "ID Post to get") @PathVariable UUID id) {
     StringBuilder result = new StringBuilder("Post by ID " + id + ":<br/>");
-    for (Post post : tempPosts) {
-      if (post.getId() == id) {
-        result.append(post.toString()).append("<br/>");
-        return result.toString();
-      }
+    Optional<Post> post = postService.getById(id);
+    if (post.isEmpty()) {
+      return "No post found for ID " + id;
     }
-    return "No post found for ID " + id;
+    result.append(post.get().toString()).append("<br/>");
+    return result.toString();
   }
 
   @PostMapping

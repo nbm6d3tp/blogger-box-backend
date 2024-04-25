@@ -1,26 +1,29 @@
 package com.dauphine.blogger.models;
 
+import java.util.UUID;
+
 public class Post {
 
-  private int id;
+  private UUID id;
   private String title;
   private String content;
   private String creationDate;
   private Category category;
 
-  public Post(int id, String title, String content, String creationDate, Category category) {
+  public Post(UUID id, String title, String content, String creationDate, Category category) {
     this.id = id;
     this.title = title;
     this.content = content;
-    this.creationDate = creationDate;
     this.category = category;
+
+//    this.creationDate = Instant.now().toEpochMilli()
   }
 
-  public int getId() {
+  public UUID getId() {
     return id;
   }
 
-  public void setId(int id) {
+  public void setId(UUID id) {
     this.id = id;
   }
 
