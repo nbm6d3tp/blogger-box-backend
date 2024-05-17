@@ -7,7 +7,7 @@ import com.dauphine.blogger.services.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,65 +31,44 @@ public class PostController {
 
   @GetMapping
   @Operation(summary = "Get all posts endpoint", description = "Retrieve all posts")
-  public String getAll() {
-    StringBuilder result = new StringBuilder("All posts:<br/>");
-    for (Post post : postService.getAll()) {
-      result.append(post.toString()).append("<br/>");
-    }
-    return result.toString();
+  public List<Post> getAll() {
+    return postService.getAll();
   }
 
   @GetMapping("/orderedByCreationDate")
   @Operation(summary = "Get all posts ordered by creation date endpoint", description = "Retrieve all posts ordered by creation date")
-  public String getAllOrderedByCreationDate() {
-    StringBuilder result = new StringBuilder("All posts ordered by creation date:<br/>");
-    for (Post post : postService.getAllOrderedByCreationDate()) {
-      result.append(post.toString()).append("<br/>");
-    }
-    return result.toString();
+  public List<Post> getAllOrderedByCreationDate() {
+    return postService.getAllOrderedByCreationDate();
   }
 
   @GetMapping("/category/{id}")
   @Operation(summary = "Get all posts by category endpoint", description = "Retrieve all posts by category")
-  public String getAllByCategory(@PathVariable UUID id) {
-    StringBuilder result = new StringBuilder("All posts by category:<br/>");
-    for (Post post : postService.getAllByCategory(id)) {
-      result.append(post.toString()).append("<br/>");
-    }
-    if (result.toString().equals("All posts by category:<br/>")) {
-      return "No posts found for category of ID " + id;
-    }
-    return result.toString();
+  public List<Post> getAllByCategory(@PathVariable UUID id) {
+    return postService.getAllByCategoryId(id);
   }
 
   @GetMapping("/{id}")
   @Operation(summary = "Get a post by ID endpoint", description = "Retrieve a post by ID")
-  public String getByID(@Parameter(description = "ID Post to get") @PathVariable UUID id) {
-    StringBuilder result = new StringBuilder("Post by ID " + id + ":<br/>");
-    Optional<Post> post = postService.getById(id);
-    if (post.isEmpty()) {
-      return "No post found for ID " + id;
-    }
-    result.append(post.get().toString()).append("<br/>");
-    return result.toString();
+  public Post getByID(@Parameter(description = "ID Post to get") @PathVariable UUID id) {
+    return postService.getById(id);
   }
 
   @PostMapping
   @Operation(summary = "Create a post endpoint", description = "Create a post")
-  public String create(@RequestBody CreationPostRequest body) {
-    return "Create new post";
+  public Post create(@RequestBody CreationPostRequest body) {
+    return postService.create(body.getTitle(), body.getContent(), body.getCategory_id());
   }
 
   @PutMapping("/{id}")
   @Operation(summary = "Update a post endpoint", description = "Update an existing post")
-  public String put(@Parameter(description = "ID Post to update") @PathVariable Integer id,
+  public Post put(@Parameter(description = "ID Post to update") @PathVariable UUID id,
       @RequestBody UpdatePostRequest body) {
-    return "Update an existing post of ID " + id;
+    return postService.put(id, body.getTitle(), body.getContent(), body.getCategory_id());
   }
 
   @DeleteMapping("/{id}")
   @Operation(summary = "Delete a post endpoint", description = "Delete an existing post")
-  public String delete(@Parameter(description = "ID Post to delete") @PathVariable Integer id) {
-    return "Delete post of id " + id;
+  public boolean delete(@Parameter(description = "ID Post to delete") @PathVariable UUID id) {
+    return postService.delete(id);
   }
 }

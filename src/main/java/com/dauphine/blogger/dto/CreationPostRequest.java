@@ -1,6 +1,7 @@
 package com.dauphine.blogger.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.UUID;
 
 public class CreationPostRequest {
 
@@ -18,7 +19,7 @@ public class CreationPostRequest {
 
   @Schema(description = "ID of the category the post belongs to", name = "category_id",
       type = "int", example = "1")
-  int category_id;
+  UUID category_id;
 
   public String getContent() {
     return content;
@@ -36,11 +37,11 @@ public class CreationPostRequest {
     this.creationDate = creationDate;
   }
 
-  public int getCategory_id() {
+  public UUID getCategory_id() {
     return category_id;
   }
 
-  public void setCategory_id(int category_id) {
+  public void setCategory_id(UUID category_id) {
     this.category_id = category_id;
   }
 

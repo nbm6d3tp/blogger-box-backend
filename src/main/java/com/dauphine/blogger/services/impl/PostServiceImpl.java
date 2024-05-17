@@ -2,8 +2,9 @@ package com.dauphine.blogger.services.impl;
 
 import com.dauphine.blogger.models.Category;
 import com.dauphine.blogger.models.Post;
+import com.dauphine.blogger.repositories.CategoryRepository;
+import com.dauphine.blogger.repositories.PostRepository;
 import com.dauphine.blogger.services.PostService;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -12,56 +13,63 @@ import org.springframework.stereotype.Service;
 @Service
 public class PostServiceImpl implements PostService {
 
-  private final List<Post> tempPosts;
+  private final PostRepository postRepository;
 
-  public PostServiceImpl() {
-    tempPosts = new ArrayList<>();
-    tempPosts.add(
-        new Post(UUID.randomUUID(), "Post 1", "Content 1",
-            new Category(UUID.randomUUID(), "Category 1")));
-    tempPosts.add(new Post(UUID.randomUUID(), "Post 2", "Content 2",
-        new Category(UUID.randomUUID(), "Category 2")));
-    tempPosts.add(new Post(UUID.randomUUID(), "Post 3", "Content 3",
-        new Category(UUID.randomUUID(), "Category 3")));
+  private final CategoryRepository categoryRepository;
+
+  public PostServiceImpl(PostRepository postRepository, CategoryRepository categoryRepository) {
+    this.postRepository = postRepository;
+    this.categoryRepository = categoryRepository;
+  }
+
+  @Override
+  public List<Post> getAllByCategoryId(UUID categoryId) {
+    return postRepository.findAllByCategoryId(categoryId);
   }
 
   @Override
   public List<Post> getAll() {
-    return tempPosts;
+    return postRepository.findAll();
   }
 
   @Override
   public List<Post> getAllOrderedByCreationDate() {
-    return tempPosts;
+    return List.of();
   }
 
   @Override
-  public List<Post> getAllByCategory(UUID categoryId) {
-    return tempPosts.stream().filter(post -> post.getCategory().getId() == categoryId).toList();
+  public Post getById(UUID id) {
+    return postRepository.findById(id).orElse(null);
   }
 
   @Override
-  public Optional<Post> getById(UUID id) {
-    for (Post post : tempPosts) {
-      if (post.getId() == id) {
-        return Optional.of(post);
-      }
+  public Post put(UUID id, String title, String description, UUID categoryId) {
+    Post post = getById(id);
+    Optional<Category> category = categoryRepository.findById(categoryId);
+    if (category.isPresent()) {
+      post.setCategory(category.get());
+    } else {
+      throw new RuntimeException("Category " + categoryId + "not found");
     }
-    return Optional.empty();
+    post.setTitle(title);
+    post.setContent(description);
+    return postRepository.save(post);
   }
 
   @Override
-  public Post create(String title, String description, String creationDate, UUID categoryId) {
-    return null;
-  }
-
-  @Override
-  public Post put(UUID id, String title, String description, String creationDate, UUID categoryId) {
-    return null;
+  public Post create(String title, String content, UUID categoryId) {
+    Optional<Category> category = categoryRepository.findById(categoryId);
+    if (category.isPresent()) {
+      Post post = new Post(title, content, category.get());
+      return postRepository.save(post);
+    } else {
+      throw new RuntimeException("Category " + categoryId + "not found");
+    }
   }
 
   @Override
   public boolean delete(UUID id) {
-    return false;
+    postRepository.deleteById(id);
+    return true;
   }
 }
