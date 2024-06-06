@@ -8,6 +8,8 @@ import com.dauphine.blogger.services.PostService;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,7 +36,7 @@ public class PostServiceImpl implements PostService {
 
   @Override
   public List<Post> getAllOrderedByCreationDate() {
-    return List.of();
+    return postRepository.findAll(Sort.by(Direction.DESC, "created_date"));
   }
 
   @Override

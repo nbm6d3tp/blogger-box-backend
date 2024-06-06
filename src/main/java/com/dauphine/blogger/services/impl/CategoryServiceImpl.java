@@ -1,5 +1,6 @@
 package com.dauphine.blogger.services.impl;
 
+import com.dauphine.blogger.exeptions.CategoryNotFoundByIDException;
 import com.dauphine.blogger.models.Category;
 import com.dauphine.blogger.repositories.CategoryRepository;
 import com.dauphine.blogger.services.CategoryService;
@@ -22,8 +23,8 @@ public class CategoryServiceImpl implements CategoryService {
   }
 
   @Override
-  public Category getById(UUID id) {
-    return repository.findById(id).orElse(null);
+  public Category getById(UUID id) throws CategoryNotFoundByIDException {
+    return repository.findById(id).orElseThrow(() -> new CategoryNotFoundByIDException(id));
   }
 
   @Override

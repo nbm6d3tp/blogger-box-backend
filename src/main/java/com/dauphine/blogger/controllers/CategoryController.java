@@ -1,13 +1,16 @@
 package com.dauphine.blogger.controllers;
 
 import com.dauphine.blogger.dto.CreationCategoryRequest;
+import com.dauphine.blogger.exeptions.CategoryNotFoundByIDException;
 import com.dauphine.blogger.models.Category;
 import com.dauphine.blogger.services.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -30,20 +33,24 @@ public class CategoryController {
 
   @GetMapping
   @Operation(summary = "Get all categories endpoint", description = "Retrieve all categories")
-  public List<Category> getAll() {
-    return categoryService.getAll();
+  public ResponseEntity<List<Category>> getAll() {
+    return ResponseEntity.ok(categoryService.getAll());
   }
 
   @GetMapping("/{id}")
   @Operation(summary = "Get a category by ID endpoint", description = "Retrieve a category by ID")
-  public Category getByID(@Parameter(description = "ID Category to get") @PathVariable UUID id) {
-    return categoryService.getById(id);
+  public ResponseEntity<Category> getByID(
+      @Parameter(description = "ID Category to get") @PathVariable UUID id)
+      throws CategoryNotFoundByIDException {
+    return ResponseEntity.ok(categoryService.getById(id));
   }
 
   @PostMapping
   @Operation(summary = "Create a new category endpoint", description = "Create a new category")
-  public Category create(@RequestBody CreationCategoryRequest body) {
-    return categoryService.create(body.getName());
+  public ResponseEntity<Category> create(@RequestBody CreationCategoryRequest body) {
+    Category category = categoryService.create(body.getName());
+    return ResponseEntity.created(URI.create("v1/categories/" + category.getId())).
+        body(category);
   }
 
   @PatchMapping("/{id}/name")
