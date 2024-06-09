@@ -13,13 +13,9 @@ public class CreationPostRequest {
       type = "string", example = "This is the content of my first post.")
   String content;
 
-  @Schema(description = "Creation date of the post", name = "creationDate",
-      type = "string", example = "2022-01-01")
-  String creationDate;
-
-  @Schema(description = "ID of the category the post belongs to", name = "category_id",
+  @Schema(description = "ID of the category the post belongs to", name = "categoryID",
       type = "int", example = "1")
-  UUID category_id;
+  UUID categoryID;
 
   public String getContent() {
     return content;
@@ -29,20 +25,12 @@ public class CreationPostRequest {
     this.content = content;
   }
 
-  public String getCreationDate() {
-    return creationDate;
+  public UUID getCategoryID() {
+    return categoryID;
   }
 
-  public void setCreationDate(String creationDate) {
-    this.creationDate = creationDate;
-  }
-
-  public UUID getCategory_id() {
-    return category_id;
-  }
-
-  public void setCategory_id(UUID category_id) {
-    this.category_id = category_id;
+  public void setCategoryID(UUID categoryID) {
+    this.categoryID = categoryID;
   }
 
   public String getTitle() {

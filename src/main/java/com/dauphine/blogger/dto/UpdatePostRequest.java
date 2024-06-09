@@ -14,13 +14,9 @@ public class UpdatePostRequest {
       type = "string", example = "This is the updated content of my post.")
   String content;
 
-  @Schema(description = "Updated creation date of the post", name = "creationDate",
-      type = "string", example = "2022-01-02")
-  String creationDate;
-
-  @Schema(description = "ID of the updated category the post belongs to", name = "category_id",
+  @Schema(description = "ID of the updated category the post belongs to", name = "categoryID",
       type = "UUID", example = "2")
-  UUID categoryId;
+  UUID categoryID;
 
   public String getTitle() {
     return title;
@@ -28,14 +24,6 @@ public class UpdatePostRequest {
 
   public void setTitle(String title) {
     this.title = title;
-  }
-
-  public String getCreationDate() {
-    return creationDate;
-  }
-
-  public void setCreationDate(String creationDate) {
-    this.creationDate = creationDate;
   }
 
   public String getContent() {
@@ -46,11 +34,11 @@ public class UpdatePostRequest {
     this.content = content;
   }
 
-  public UUID getCategory_id() {
-    return categoryId;
+  public UUID getCategoryID() {
+    return categoryID;
   }
 
-  public void setCategory_id(UUID categoryId) {
-    this.categoryId = categoryId;
+  public void setCategoryID(UUID categoryID) {
+    this.categoryID = categoryID;
   }
 }

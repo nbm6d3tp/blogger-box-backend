@@ -1,5 +1,6 @@
 package com.dauphine.blogger.services.impl;
 
+import com.dauphine.blogger.exeptions.CategoryAlreadyExistedException;
 import com.dauphine.blogger.exeptions.CategoryNotFoundByIDException;
 import com.dauphine.blogger.models.Category;
 import com.dauphine.blogger.repositories.CategoryRepository;
@@ -33,23 +34,31 @@ public class CategoryServiceImpl implements CategoryService {
   }
 
   @Override
-  public Category create(String name) {
+  public Category create(String name) throws CategoryAlreadyExistedException {
+    if (repository.existsByNameLike(name)) {
+      throw new CategoryAlreadyExistedException(name);
+    }
     Category category = new Category(name);
     return repository.save(category);
   }
 
   @Override
-  public Category updateName(UUID id, String name) {
-    return repository.findById(id)
-        .map(category -> {
-          category.setName(name);
-          return repository.save(category);
-        })
-        .orElse(null);
+  public Category updateName(UUID id, String name)
+      throws CategoryNotFoundByIDException, CategoryAlreadyExistedException {
+    if (repository.existsByNameLike(name)) {
+      throw new CategoryAlreadyExistedException(name);
+    }
+    Category category = repository.findById(id)
+        .orElseThrow(() -> new CategoryNotFoundByIDException(id));
+    category.setName(name);
+    return repository.save(category);
   }
 
   @Override
-  public boolean delete(UUID id) {
+  public boolean delete(UUID id) throws CategoryNotFoundByIDException {
+    if (!repository.existsById(id)) {
+      throw new CategoryNotFoundByIDException(id);
+    }
     repository.deleteById(id);
     return true;
   }
