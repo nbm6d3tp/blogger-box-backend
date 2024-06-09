@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -32,9 +33,11 @@ public class CategoryController {
   }
 
   @GetMapping
-  @Operation(summary = "Get all categories endpoint", description = "Retrieve all categories")
-  public ResponseEntity<List<Category>> getAll() {
-    return ResponseEntity.ok(categoryService.getAll());
+  @Operation(summary = "Get all categories endpoint", description = "Retrieve all categories or filter like name")
+  public ResponseEntity<List<Category>> getAll(@RequestParam(required = false) String name) {
+    return ResponseEntity.ok(
+        name == null || name.isBlank() ? categoryService.getAll()
+            : categoryService.getAllLikeName(name));
   }
 
   @GetMapping("/{id}")

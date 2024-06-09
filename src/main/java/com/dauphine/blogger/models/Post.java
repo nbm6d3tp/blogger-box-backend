@@ -65,12 +65,12 @@ public class Post {
     this.content = content;
   }
 
-  public LocalDateTime getCreationDate() {
+  public LocalDateTime getCreatedDate() {
     return createdDate;
   }
 
-  public void setCreationDate(LocalDateTime creationDate) {
-    this.createdDate = creationDate;
+  public void setCreatedDate(LocalDateTime createdDate) {
+    this.createdDate = createdDate;
   }
 
   public Category getCategory() {
@@ -79,16 +79,5 @@ public class Post {
 
   public void setCategory(Category category) {
     this.category = category;
-  }
-
-  @Override
-  public String toString() {
-    return "Post{" +
-        "id=" + id +
-        ", title='" + title + '\'' +
-        ", content='" + content + '\'' +
-        ", creationDate='" + createdDate + '\'' +
-        ", category=" + category +
-        '}';
   }
 }

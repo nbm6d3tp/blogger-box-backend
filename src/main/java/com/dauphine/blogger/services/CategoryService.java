@@ -9,6 +9,8 @@ public interface CategoryService {
 
   List<Category> getAll();
 
+  List<Category> getAllLikeName(String name);
+
   Category getById(UUID id) throws CategoryNotFoundByIDException;
 
   Category create(String name);
@@ -16,4 +18,5 @@ public interface CategoryService {
   Category updateName(UUID id, String name);
 
   boolean delete(UUID id);
+
 }

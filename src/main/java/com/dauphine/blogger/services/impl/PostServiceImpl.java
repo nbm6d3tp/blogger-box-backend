@@ -35,6 +35,11 @@ public class PostServiceImpl implements PostService {
   }
 
   @Override
+  public List<Post> getAllLikeTitleOrContent(String value) {
+    return postRepository.findAllLikeTitleOrContent(value);
+  }
+
+  @Override
   public List<Post> getAllOrderedByCreationDate() {
     return postRepository.findAll(Sort.by(Direction.DESC, "created_date"));
   }

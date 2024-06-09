@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -30,9 +31,9 @@ public class PostController {
   }
 
   @GetMapping
-  @Operation(summary = "Get all posts endpoint", description = "Retrieve all posts")
-  public List<Post> getAll() {
-    return postService.getAll();
+  @Operation(summary = "Get all posts endpoint", description = "Retrieve all posts or filter like title or content")
+  public List<Post> getAll(@RequestParam(required = false) String value) {
+    return postService.getAllLikeTitleOrContent(value);
   }
 
   @GetMapping("/orderedByCreationDate")

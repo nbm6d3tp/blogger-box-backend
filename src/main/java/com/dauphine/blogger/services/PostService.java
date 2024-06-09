@@ -8,6 +8,8 @@ public interface PostService {
 
   List<Post> getAll();
 
+  List<Post> getAllLikeTitleOrContent(String value);
+
   List<Post> getAllOrderedByCreationDate();
 
   List<Post> getAllByCategoryId(UUID categoryId);
@@ -19,4 +21,5 @@ public interface PostService {
   boolean delete(UUID id);
 
   Post create(String title, String content, UUID categoryId);
+
 }
