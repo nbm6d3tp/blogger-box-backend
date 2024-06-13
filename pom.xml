@@ -48,6 +48,12 @@
       <groupId>org.springframework.boot</groupId>
     </dependency>
 
+    <dependency>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <groupId>org.springframework.boot</groupId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
   <description>Blogger Box Backend</description>
   <groupId>com.dauphine</groupId>
