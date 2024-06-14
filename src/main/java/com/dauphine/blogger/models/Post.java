@@ -1,5 +1,6 @@
 package com.dauphine.blogger.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -18,6 +19,7 @@ public class Post {
   private UUID id;
 
   @Column(name = "created_date")
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   private LocalDateTime createdDate;
 
   @Column(name = "title")
